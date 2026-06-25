@@ -43,7 +43,7 @@ function About() {
           The smartest way to find game deals. Stop overpaying — let DealQuest do the hunting.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-          <Link to="/" className="bg-green-500 hover:bg-green-400 text-black font-bold px-6 py-3 rounded-xl transition text-center">
+          <Link to="/deals" className="bg-green-500 hover:bg-green-400 text-black font-bold px-6 py-3 rounded-xl transition text-center">
             Browse Deals
           </Link>
           <Link to="/free" className="bg-gray-800 hover:bg-gray-700 text-white font-bold px-6 py-3 rounded-xl transition text-center">
@@ -57,7 +57,7 @@ function About() {
         <div className="grid grid-cols-3 gap-4 text-center">
           {[
             { value: "30+", label: "Stores Tracked" },
-            { value: "1000s", label: "Live Deals" },
+            { value: "1000+", label: "Live Deals" },
             { value: "Free", label: "Always" },
           ].map(stat => (
             <div key={stat.label} className="bg-gray-900/80 border border-gray-800 rounded-2xl p-4 sm:p-5">
@@ -145,7 +145,7 @@ function About() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-12 text-center bg-green-950 border border-green-800 rounded-2xl p-8">
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Ready to save money?</h2>
         <p className="text-gray-400 mb-5 text-sm sm:text-base">Browse thousands of deals across all major PC gaming stores.</p>
-        <Link to="/" className="bg-green-500 hover:bg-green-400 text-black font-bold px-8 py-3 rounded-xl transition inline-block">
+        <Link to="/deals" className="bg-green-500 hover:bg-green-400 text-black font-bold px-8 py-3 rounded-xl transition inline-block">
           Start Browsing →
         </Link>
       </motion.div>

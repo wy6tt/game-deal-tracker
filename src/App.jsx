@@ -146,7 +146,7 @@ function App() {
             <Link to="/deals" className={`text-sm font-medium transition ${location.pathname === "/deals" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>Deals</Link>
             <Link to="/free" className={`text-sm font-medium transition ${location.pathname === "/free" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>Free</Link>
             <Link to="/stores" className={`text-sm font-medium transition ${location.pathname === "/stores" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>Stores</Link>
-            <Link to="/about" className={`text-sm font-medium transition ${location.pathname === "/about" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>About</Link>
+            <Link to="/" className={`text-sm font-medium transition ${location.pathname === "/" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>About</Link>
             {user ? (
               <>
                 <Link to="/wishlist" className={`text-sm font-medium transition flex items-center gap-1.5 ${location.pathname === "/wishlist" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>
@@ -196,7 +196,7 @@ function App() {
                 { to: "/deals", label: "Deals" },
                 { to: "/free", label: "Free Games" },
                 { to: "/stores", label: "Stores" },
-                { to: "/about", label: "About" },
+                { to: "/", label: "About" },
                 ...(user ? [{ to: "/wishlist", label: "Wishlist" }] : []),
               ].map(link => (
                 <Link
@@ -221,8 +221,7 @@ function App() {
       </motion.nav>
 
       <Routes>
-        <Route path="/" element={<Navigate to="/about" replace />} />
-          <Route path="/deals" element={
+        <Route path="/deals" element={
           <main className="max-w-6xl mx-auto px-6 py-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -402,7 +401,7 @@ function App() {
         <Route path="/login" element={<Auth />} />
         <Route path="/free" element={<Free user={user} wishlist={wishlist} setWishlist={setWishlist} />} />
         <Route path="/stores" element={<Stores user={user} wishlist={wishlist} setWishlist={setWishlist} />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/" element={<About />} />
       </Routes>
 
       <GameModal
