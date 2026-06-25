@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Routes, Route, Link, useLocation } from "react-router-dom"
+import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { supabase } from "./supabase"
 import { Gamepad2 } from "lucide-react"
@@ -37,8 +37,9 @@ function App() {
   const [selectedStore, setSelectedStore] = useState("")
   const [maxPrice, setMaxPrice] = useState("")
   const [selectedDeal, setSelectedDeal] = useState(null)
-  const [hideDLC, setHideDLC] = useState(true)
+  const [hideDLC, setHideDLC] = useState(false)
   const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -64,7 +65,7 @@ function App() {
   useEffect(() => {
     setLoading(true)
     const tab = TABS.find(t => t.id === activeTab)
-    let url = `https://www.cheapshark.com/api/1.0/deals?sortBy=${tab.sortBy}&pageSize=24`
+    let url = `https://www.cheapshark.com/api/1.0/deals?sortBy=${tab.sortBy}&pageSize=60`
     if (search) url += `&title=${search}`
     if (selectedStore) url += `&storeID=${selectedStore}`
     if (maxPrice) url += `&upperPrice=${maxPrice}`
@@ -139,8 +140,10 @@ function App() {
             </motion.div>
             <span className="text-lg font-extrabold tracking-tight text-white">Deal<span className="animated-word text-green-400">Quest</span></span>
           </Link>
-          <div className="flex items-center gap-6">
-            <Link to="/" className={`text-sm font-medium transition ${location.pathname === "/" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>Deals</Link>
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/deals" className={`text-sm font-medium transition ${location.pathname === "/deals" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>Deals</Link>
             <Link to="/free" className={`text-sm font-medium transition ${location.pathname === "/free" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>Free</Link>
             <Link to="/stores" className={`text-sm font-medium transition ${location.pathname === "/stores" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>Stores</Link>
             <Link to="/about" className={`text-sm font-medium transition ${location.pathname === "/about" ? "text-green-400" : "text-gray-400 hover:text-white"}`}>About</Link>
@@ -170,11 +173,56 @@ function App() {
               </Link>
             )}
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden text-gray-400 hover:text-white transition"
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
         </div>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden border-t border-gray-800 mt-4 pt-4 flex flex-col gap-4"
+            >
+              {[
+                { to: "/deals", label: "Deals" },
+                { to: "/free", label: "Free Games" },
+                { to: "/stores", label: "Stores" },
+                { to: "/about", label: "About" },
+                ...(user ? [{ to: "/wishlist", label: "Wishlist" }] : []),
+              ].map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-sm font-medium transition ${location.pathname === link.to ? "text-green-400" : "text-gray-400"}`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              {user ? (
+                <button onClick={() => { supabase.auth.signOut(); setMenuOpen(false) }} className="text-sm text-gray-500 text-left">Sign out</button>
+              ) : (
+                <Link to="/login" onClick={() => setMenuOpen(false)} className="bg-green-500 text-black text-sm font-bold px-4 py-2 rounded-xl text-center">
+                  Sign in
+                </Link>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.nav>
 
       <Routes>
-        <Route path="/" element={
+        <Route path="/" element={<Navigate to="/about" replace />} />
+          <Route path="/deals" element={
           <main className="max-w-6xl mx-auto px-6 py-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -259,7 +307,7 @@ function App() {
                     : "bg-gray-900 text-gray-400 border-gray-700 hover:text-white"
                 }`}
               >
-                {hideDLC ? "✓ Hiding DLC" : "Show DLC"}
+                {hideDLC ? "✓ DLC Hidden" : "Hide DLC"}
               </button>
             </motion.div>
 
@@ -321,7 +369,7 @@ function App() {
                         </motion.button>
 
                         <div className="overflow-hidden">
-                          <img src={deal.thumb} alt={deal.title} className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300" />
+                          <img src={deal.thumb} alt={deal.title} className="w-full h-24 sm:h-32 object-cover group-hover:scale-105 transition-transform duration-300" />
                         </div>
 
                         <div className="p-3">
